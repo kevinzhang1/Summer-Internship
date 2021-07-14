@@ -1,0 +1,31 @@
+postgres=# CREATE TABLE company(id bigint, name varchar(50), start date, hours float, salary float, train_period interval, test_score numeric, dob date, address varchar(50), daily_start timetz);
+CREATE TABLE
+postgres=# \d company
+                        Table "public.company"
+    Column    |         Type          | Collation | Nullable | Default
+--------------+-----------------------+-----------+----------+---------
+ id           | bigint                |           |          |
+ name         | character varying(50) |           |          |
+ start        | date                  |           |          |
+ hours        | double precision      |           |          |
+ salary       | double precision      |           |          |
+ train_period | interval              |           |          |
+ test_score   | numeric               |           |          |
+ dob          | date                  |           |          |
+ address      | character varying(50) |           |          |
+ daily_start  | time with time zone   |           |          |
+postgres=# INSERT INTO company(id, name, start, hours, salary, train_period, test_score, dob, address, daily_start) VALUES(000001, 'Susan Jones', '1980-01-01', 8.0, 99.99, '3 hours', 18, '1999-10-01', '2 Green Street', '2004-10-19 10:23:54+02');
+INSERT 0 1
+postgres=# SELECT * FROM company;
+ id |    name     |   start    | hours | salary | train_period | test_score |    dob     |    address     | daily_start
+----+-------------+------------+-------+--------+--------------+------------+------------+----------------+-------------
+  1 | Susan Jones | 1980-01-01 |     8 |  99.99 | 03:00:00     |         18 | 1999-10-01 | 2 Green Street | 10:23:54+02
+(1 row)
+postgres=# INSERT INTO company(id, name, start, hours, salary, train_period, test_score, dob, address, daily_start) VALUES(9223372036854775807, 'big int max value', '1980-01-01', 8.0, 99.99, '3 hours', 18, '1999-10-01', '2 Green Street', '2004-10-19 10:23:54+02');
+INSERT 0 1
+postgres=# SELECT * FROM company;
+         id          |       name        |   start    | hours | salary | train_period | test_score |    dob     |    address     | daily_start
+---------------------+-------------------+------------+-------+--------+--------------+------------+------------+----------------+-------------
+                   1 | Susan Jones       | 1980-01-01 |     8 |  99.99 | 03:00:00     |         18 | 1999-10-01 | 2 Green Street | 10:23:54+02
+ 9223372036854775807 | big int max value | 1980-01-01 |     8 |  99.99 | 03:00:00     |         18 | 1999-10-01 | 2 Green Street | 10:23:54+02
+(2 rows)
