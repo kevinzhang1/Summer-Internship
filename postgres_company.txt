@@ -1,3 +1,9 @@
+Steps:
+
+1) Create table
+
+2) Insert data
+
 postgres=# CREATE TABLE company(id bigint, name varchar(50), start date, hours float, salary float, train_period interval, test_score numeric, dob date, address varchar(50), daily_start timetz);      This is a command to create a table called company.
 CREATE TABLE
 
