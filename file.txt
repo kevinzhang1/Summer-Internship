@@ -1,3 +1,0 @@
-I,am,Kevin,Zhang
-I,am,awesome
-I,am,amazing
