@@ -1,6 +1,6 @@
 #include "file.h"
 
-vector<string> File() {
+vector<string> readfile() {
 	fstream file; //creates a fstream variable
     vector<string> vec;
 	file.open("file.txt", ios::in); //opens file.txt
@@ -16,16 +16,16 @@ vector<string> File() {
 }
 
 vector<string> split(string str, char del) {
-    vector<string> vec;
-    string temp = "";
+    vector<string> vec; //creates a string vector
+    string temp = ""; //temporary string to hold string
 
-    for (int i = 0; i < (int)str.size(); i++) {
-        if (str[i] != del) temp += str[i];
+    for (int i = 0; i < (int)str.size(); i++) { //loop through whole string
+        if (str[i] != del) temp += str[i]; //if indexed part of string not deliminator, add it to temp string
         else {
-            vec.push_back(temp);
+            vec.push_back(temp); //otherwise, add it to string vector and reset temp string
             temp = "";
         }
     }
-    vec.push_back(temp);
-    return vec;
+    vec.push_back(temp); //pushes last string into vector
+    return vec; //returns string vector
 }

@@ -4,5 +4,5 @@
 #include <vector>
 using namespace std;
 
-vector<string> File();
+vector<string> readfile();
 vector<string> split(string str, char del);
