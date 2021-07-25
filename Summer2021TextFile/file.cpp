@@ -1,9 +1,9 @@
 #include "file.h"
 
-vector<string> readfile() {
+vector<string> readfile(string filename) {
 	fstream file; //creates a fstream variable
     vector<string> vec;
-	file.open("file.txt", ios::in); //opens file.txt
+	file.open(filename, ios::in); //opens file.txt
 	if (!file) cout << "Open file failed\n"; //if file variable doesn't exist, print this message
 	else {
 		cout << "Open file succeeded\n"; //otherwise, print this message

@@ -5,7 +5,7 @@
 
 int main() {
     vector<vector<string>> formateddata; //defines a vector for string vectors
-    vector<string> rawdata=readfile(); //puts data read from text into a string vector of raw data
+    vector<string> rawdata=readfile("file.txt"); //reads data from file based on file name and puts it into a string vector of raw data
     char delimiter = ','; //defines deliminator as a comma
     for (string element : rawdata) formateddata.push_back(split(element, delimiter)); //loops through raw data, splits each string, and then pushes the results into the formated data
 
