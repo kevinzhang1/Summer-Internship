@@ -10,11 +10,18 @@
 #include <map>
 #include <vector>
 using namespace std;
-
-void show_error(unsigned int handletype, const SQLHANDLE& handle);
-void catch_error(int retcode, string command);
-void odbc_setup(SQLCHAR* dsname, SQLCHAR* userID, SQLCHAR* password, SQLHSTMT* hstmt, SQLHANDLE* hdlConn);
-void odbc_finish(SQLHANDLE hdlConn, SQLHSTMT hstmt);
-void odbc_data(SQLHSTMT hstmt, SQLCHAR* stmt);
-void odbc_manual(SQLHSTMT hstmt);
+class odbc {
+public:
+	odbc(SQLCHAR* dsname, SQLCHAR* userID, SQLCHAR* password);
+	void odbc_data(SQLCHAR* stmt);
+	void odbc_manual();
+	void odbc_finish();
+private:
+	SQLHSTMT hstmt;
+	SQLHANDLE hdlConn;
+	double ID[2];
+	vector <string> name;
+	void show_error(unsigned int handletype, const SQLHANDLE& handle);
+	void catch_error(int retcode, string command);
+};
 #endif

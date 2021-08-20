@@ -1,40 +1,28 @@
 #include "odbc.h"
 
-/*odbc_setup function: It sets up odbc statement handle and connection based on server name, user ID, and password
-Inputs: SQLCHAR* dsname, SQLCHAR* userID, SQLCHAR* password, SQLHSTMT* hstmt, SQLHANDLE* hdlConn
+/*odbc constructor function: It sets up odbc statement handle and connection based on server name, user ID, and password
+Inputs: SQLCHAR* dsname, SQLCHAR* userID, SQLCHAR* password
 */
-void odbc_setup(SQLCHAR* dsname, SQLCHAR* userID, SQLCHAR* password, SQLHSTMT* hstmt, SQLHANDLE* hdlConn) {
+odbc::odbc(SQLCHAR* dsname, SQLCHAR* userID, SQLCHAR* password) {
 	SQLRETURN retcode; //the return code to check the success of each operation
 	SQLHANDLE hdlEnv; //the handle environment
 	retcode = SQLAllocHandle(SQL_HANDLE_ENV, NULL, &hdlEnv); //allocates environment handle  
 	catch_error(retcode, "Environment handle allocation"); //catches any errors for environment handle allocation 
 	retcode = SQLSetEnvAttr(hdlEnv, SQL_ATTR_ODBC_VERSION, (void*)SQL_OV_ODBC3, 0); //sets the ODBC version environment
 	catch_error(retcode, "ODBC version environment setup"); //catches any errors for ODBC version environment setup
-	retcode = SQLAllocHandle(SQL_HANDLE_DBC, hdlEnv, hdlConn); //allocates connection handle  
+	retcode = SQLAllocHandle(SQL_HANDLE_DBC, hdlEnv, &hdlConn); //allocates connection handle  
 	catch_error(retcode, "Connection handle allocation"); //catches any errors for connection handle allocation
 	SQLFreeHandle(SQL_HANDLE_ENV, hdlEnv);
-	retcode = SQLConnect(*hdlConn, dsname, SQL_NTS, userID, SQL_NTS, password, SQL_NTS); //connects to data server
+	retcode = SQLConnect(hdlConn, dsname, SQL_NTS, userID, SQL_NTS, password, SQL_NTS); //connects to data server
 	catch_error(retcode, "Server connection"); //catches any errors for server connection
-	retcode = SQLAllocHandle(SQL_HANDLE_STMT, *hdlConn, hstmt); //allocates statement handle  
+	retcode = SQLAllocHandle(SQL_HANDLE_STMT, hdlConn, &hstmt); //allocates statement handle  
 	catch_error(retcode, "Statement handle allocation"); //catches any errors for statement handle allocation
 }
-/*odbc_finish function: It finishes ODBC connection
-Input: SQLHANDLE hdlConn
+
+/*odbc_data function: It exectues command and obtains SQL table data
+Input: SQLCHAR* stmt
 */
-void odbc_finish(SQLHANDLE hdlConn, SQLHSTMT hstmt) {
-	SQLRETURN retcode = SQLDisconnect(hdlConn); //terminate ODBC connection
-	catch_error(retcode, "Connection termination"); //catches any errors for ODBC connection termination
-	SQLFreeHandle(SQL_HANDLE_STMT, hstmt); //frees the statement handle
-}
-
-double ID[2];
-vector <string> name;
-
-/*odbc_data function: It finishes ODBC connection
-Input: SQLHANDLE hdlConn
-*/
-
-void odbc_data(SQLHSTMT hstmt, SQLCHAR* stmt) {
+void odbc::odbc_data(SQLCHAR* stmt) {
 	SQLINTEGER cbData, cbName, retcode, sCustID; //defines four SQL integers
 	SQLCHAR* szName[50]; //defines a SQL character pointer with 50 characters capacity
 	retcode = SQLExecDirect(hstmt, stmt, SQL_NTS); //executes the stmt statement in the statement handle
@@ -56,9 +44,9 @@ void odbc_data(SQLHSTMT hstmt, SQLCHAR* stmt) {
 }
 
 /*odbc_manual function: It allows user to manually enter ODBC input
-Input: SQLHSTMT hstmt
+Inputs: None
 */
-void odbc_manual(SQLHSTMT hstmt) {
+void odbc::odbc_manual() {
 	SQLINTEGER retcode;
 	while (1) {
 		char* input = new char[100]; //defines character input for input
@@ -71,23 +59,30 @@ void odbc_manual(SQLHSTMT hstmt) {
 	}
 }
 
+/*odbc_finish function: It finishes ODBC connection
+Inputs: None
+*/
+void odbc::odbc_finish() {
+	SQLRETURN retcode = SQLDisconnect(hdlConn); //terminate ODBC connection
+	catch_error(retcode, "Connection termination"); //catches any errors for ODBC connection termination
+	SQLFreeHandle(SQL_HANDLE_STMT, hstmt); //frees the statement handle
+}
 
-/*catch_error function: It shows errors for SQL commands
+/*show_error function: It shows errors for SQL commands
 Inputs: unsigned int handletype and const SQLHANDLE& handle
 */
-
-void show_error(unsigned int handletype, const SQLHANDLE& handle) {
+void odbc::show_error(unsigned int handletype, const SQLHANDLE& handle) {
 	SQLCHAR sqlstate[1024];
 	SQLCHAR message[1024];
 	if (SQL_SUCCESS == SQLGetDiagRec(handletype, handle, 1, sqlstate, NULL, message, 1024, NULL))
 		cout << "Message: " << message << "\nSQLSTATE: " << sqlstate << endl;
 }
+
 /*catch_error function: It catches errors for SQL functions
 Inputs: int retcode and string command
 */
-void catch_error(int retcode, string command) {
-	if (retcode == SQL_SUCCESS)
-		cout << command << " successful." << endl;
+void odbc::catch_error(int retcode, string command) {
+	if (retcode == SQL_SUCCESS) cout << command << " successful." << endl;
 	else {
 		cout << command << " failed. Error return code: " << retcode << endl;
 		exit(1);
