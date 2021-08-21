@@ -3,7 +3,7 @@
 /*odbc constructor function: It sets up odbc statement handle and connection based on server name, user ID, and password
 Inputs: SQLCHAR* dsname, SQLCHAR* userID, SQLCHAR* password
 */
-database_manager::database_manager(SQLCHAR* dsname, SQLCHAR* userID, SQLCHAR* password) {
+database_manager::database_manager(const char* dsname, const char* userID, const char* password) {
 	SQLRETURN retcode; //the return code to check the success of each operation
 	SQLHANDLE hdlEnv; //the handle environment
 	retcode = SQLAllocHandle(SQL_HANDLE_ENV, NULL, &hdlEnv); //allocates environment handle  
@@ -13,7 +13,7 @@ database_manager::database_manager(SQLCHAR* dsname, SQLCHAR* userID, SQLCHAR* pa
 	retcode = SQLAllocHandle(SQL_HANDLE_DBC, hdlEnv, &hdlConn); //allocates connection handle  
 	catch_error(retcode, "Connection handle allocation"); //catches any errors for connection handle allocation
 	SQLFreeHandle(SQL_HANDLE_ENV, hdlEnv);
-	retcode = SQLConnect(hdlConn, dsname, SQL_NTS, userID, SQL_NTS, password, SQL_NTS); //connects to data server
+	retcode = SQLConnect(hdlConn, (SQLCHAR*) dsname, SQL_NTS, (SQLCHAR*)userID, SQL_NTS, (SQLCHAR*)password, SQL_NTS); //connects to data server
 	catch_error(retcode, "Server connection"); //catches any errors for server connection
 	retcode = SQLAllocHandle(SQL_HANDLE_STMT, hdlConn, &hstmt); //allocates statement handle  
 	catch_error(retcode, "Statement handle allocation"); //catches any errors for statement handle allocation
@@ -22,10 +22,10 @@ database_manager::database_manager(SQLCHAR* dsname, SQLCHAR* userID, SQLCHAR* pa
 /*odbc_data function: It exectues command and obtains SQL table data
 Input: SQLCHAR* stmt
 */
-void database_manager::getdata(SQLCHAR* stmt) {
+void database_manager::getdata(const char* stmt) {
 	SQLINTEGER cbData, cbName, retcode, sCustID; //defines four SQL integers
 	SQLCHAR* szName[50]; //defines a SQL character pointer with 50 characters capacity
-	retcode = SQLExecDirect(hstmt, stmt, SQL_NTS); //executes the stmt statement in the statement handle
+	retcode = SQLExecDirect(hstmt, (SQLCHAR*) stmt, SQL_NTS); //executes the stmt statement in the statement handle
 	int i = 0; //defines iteration integer
 	while (SQLFetch(hstmt) == SQL_SUCCESS) {
 		SQLGetData(hstmt, 1, SQL_C_SLONG, &sCustID, 256, &cbData); //gets SQL data of first column

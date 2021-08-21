@@ -12,8 +12,8 @@
 using namespace std;
 class database_manager {
 public:
-	database_manager(SQLCHAR* dsname, SQLCHAR* userID, SQLCHAR* password);
-	void getdata(SQLCHAR* stmt);
+	database_manager(const char* dsname, const char* userID, const char* password);
+	void getdata(const char* stmt);
 	void manual_input();
 	void finish();
 private:
