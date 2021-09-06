@@ -19,8 +19,8 @@ database_manager::database_manager(const char* dsname, const char* userID, const
 	catch_error(retcode, "Statement handle allocation"); //catches any errors for statement handle allocation
 }
 
-/*odbc_data function: It exectues command and obtains SQL table data
-Input: SQLCHAR* stmt
+/*getdata function: It exectues command, obtains SQL table data, and saves it to a text file
+Input: const char* stmt
 */
 void database_manager::getdata(const char* stmt) {
 	SQLINTEGER cbData, cbName, retcode, sCustID; //defines four SQL integers
@@ -35,15 +35,26 @@ void database_manager::getdata(const char* stmt) {
 		name.push_back(s); //pushes string into string vector
 		i++; //increments iteration integer
 	}
-	for (int i = 0; i < 2; i++) cout << ID[i] << "  "; //prints contents of double array
+	ofstream myfile; //defines an ofstream variable called myfile
+	myfile.open("input.txt"); //opens a text file called input.txt
+
+	for (int i = 0; i < 2; i++) {
+		cout << ID[i] << "  "; //prints contents of double array
+		myfile << ID[i] << ", "; //writes the number along with a comma in between to the file
+	}
+	myfile << "\n";
 	cout << endl;
-	for (int i = 0; i < 2; i++) cout << name[i] << "  "; //prints contents of string vector
+	for (int i = 0; i < 2; i++) {
+		cout << name[i] << "  "; //prints contents of string vector
+		myfile << name[i] << ", "; //writes the string along with a comma in between to the file
+	}
 	cout << endl;
+	myfile.close(); //closes the file
 	retcode = SQLCloseCursor(hstmt); //closes cursor to prevent 'invalid cursor state' error
 	catch_error(retcode, "Cursor close"); //catches any errors for cursor closure
 }
 
-/*odbc_manual function: It allows user to manually enter ODBC input
+/*manual_input function: It allows user to manually enter ODBC input
 Inputs: None
 */
 void database_manager::manual_input() {
@@ -85,6 +96,6 @@ void database_manager::catch_error(int retcode, string command) {
 	if (retcode == SQL_SUCCESS) cout << command << " successful." << endl;
 	else {
 		cout << command << " failed. Error return code: " << retcode << endl;
-		exit(1);
+		//exit(1);
 	}
 }

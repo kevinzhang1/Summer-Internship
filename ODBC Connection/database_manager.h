@@ -9,6 +9,7 @@
 #include <string.h>
 #include <map>
 #include <vector>
+#include <fstream>
 using namespace std;
 class database_manager {
 public:

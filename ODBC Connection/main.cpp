@@ -1,5 +1,5 @@
 #include "database_manager.h"
-const char* dsnName = "PostgresVS"; //the database name
+const char* dsnName = "PostgreSQL30"; //the database name
 const char* userID = "postgres"; //the user ID needed to log in
 const char* password = "zhang man"; //the password needed to verify credentials
 const char* stmt = "SELECT id, name FROM public.company"; // the SQL command to get all table data
